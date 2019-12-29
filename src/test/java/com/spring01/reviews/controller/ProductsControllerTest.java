@@ -7,20 +7,25 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.data.domain.Page;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -32,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
+@EnableSpringDataWebSupport
 public class ProductsControllerTest {
 
     @Autowired private MockMvc mvc;
@@ -48,9 +54,9 @@ public class ProductsControllerTest {
         product1.setStock(50);
         List<Product> products = new ArrayList<>();
         products.add(product);
+
         given(productService.findById(1)).willReturn(java.util.Optional.of(product));
         given(productService.save(any())).willReturn(product);
-
 
     }
     @Test
@@ -174,6 +180,24 @@ public class ProductsControllerTest {
                 .andExpect(jsonPath("$.errors[0]").value("Product not found"));
     }
 
+    @Test
+    public void shoulReturnAllProducts() throws Exception {
+         int limit=2;
+         int offset=0;
+        Pageable pageable = PageRequest.of(offset, limit);
+        Product product = product();
+        product.setId(1L);
+        Page<Product> products = new PageImpl<>(Collections.singletonList(product));
+        given(productService.findAll(any(), any())).willReturn(products);
+        mvc.perform(get(new URI("/products"))
+                .param("limit", "2")
+                .param("offset", "0")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.content[0].id").value(1L));
+    }
+    
     private Product product(){
         Product product = new Product();
         product.setName("Blue band");
@@ -186,4 +210,5 @@ public class ProductsControllerTest {
 
         return  product;
     }
+
 }

@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.data.domain.Page;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
@@ -75,8 +75,14 @@ public class ProductsController {
      *
      * @return The list of products.
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public List<?> listProducts() {
-        throw new HttpServerErrorException(HttpStatus.NOT_IMPLEMENTED);
+    @RequestMapping(value = "")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?>  listProducts(@RequestParam(name="limit")
+                                    @Min(value = 1, message = "Limit of products must be greater than or equal to 1") Integer limit,
+                                @RequestParam(name="offset")
+                                    @Min(value = 0, message = "Offset must be greater than or equal to 0") Integer offset) {
+
+        Page<Product> products = productService.findAll(offset, limit);
+        return new ResponseEntity<Page<Product>>(products, HttpStatus.OK);
     }
 }
