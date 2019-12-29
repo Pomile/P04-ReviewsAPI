@@ -48,7 +48,7 @@ public class ProductsControllerTest {
         product1.setStock(50);
         List<Product> products = new ArrayList<>();
         products.add(product);
-        // given(productService.findById(1)).willReturn(java.util.Optional.of(product));
+        given(productService.findById(1)).willReturn(java.util.Optional.of(product));
         given(productService.save(any())).willReturn(product);
 
 
@@ -132,6 +132,46 @@ public class ProductsControllerTest {
                 .andExpect(jsonPath("$.error").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.errors[0].stock")
                         .value("stock must be greater than or equal to 1.0"));
+    }
+
+    @Test
+    public void shouldReturnAProduct() throws Exception {
+
+        mvc.perform(get(new URI("/products/1"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    public void shouldReturnClientErrorIfIfProductIdIsZero() throws Exception {
+
+        mvc.perform(get(new URI("/products/0"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.errors.[0].0").value("Invalid id"));
+    }
+
+    @Test
+    public void shoulReturnClientErrorIfProductIdIsNegative() throws Exception {
+
+        mvc.perform(get(new URI("/products/-1"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.error").value("BAD_REQUEST"));
+    }
+
+    @Test
+    public void shoulReturnNotFoundIfProductIdDoesNotExist() throws Exception {
+
+        mvc.perform(get(new URI("/products/20"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errors[0]").value("Product not found"));
     }
 
     private Product product(){
