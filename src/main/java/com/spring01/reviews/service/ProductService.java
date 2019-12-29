@@ -28,4 +28,13 @@ public class ProductService{
         return productRepository.save(product);
     }
 
+    /**
+     ** find a Product by Id
+     * @param id an integer
+     * @return a product
+     */
+    public Optional<Product> findById(Integer id){
+        return productRepository.findById((Long.valueOf(id)));
+    }
+
 }

@@ -11,6 +11,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,10 +55,20 @@ public class ProductsController {
      * @param id The id of the product.
      * @return The product if found, or a 404 not found.
      */
-    @RequestMapping(value = "/{id}")
-    public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
-        throw new HttpServerErrorException(HttpStatus.NOT_IMPLEMENTED);
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> findById(
+            @PathVariable("id")
+            @Min(value = 1, message="Invalid id")
+                    Integer id) {
+        Optional<Product> optionalProduct = productService.findById(id);
+        if (optionalProduct.isPresent()){
+
+            return new ResponseEntity<>(optionalProduct.get(), HttpStatus.OK);
+        }
+        throw new  ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
     }
+
 
     /**
      * Lists all products.
