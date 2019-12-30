@@ -3,6 +3,9 @@ package com.spring01.reviews.service;
 import com.spring01.reviews.model.Product;
 import com.spring01.reviews.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +38,18 @@ public class ProductService{
      */
     public Optional<Product> findById(Integer id){
         return productRepository.findById((Long.valueOf(id)));
+    }
+
+    /**
+     ** find a Product by Id
+     * @param limit an integer
+     * @param offset an integer
+     * @return a product
+     */
+    public Page<Product> findAll(Integer offset, Integer limit){
+        Pageable pageable = PageRequest.of(offset, limit);
+        Page<Product> products=  productRepository.findAll(pageable);
+        return products;
     }
 
 }
