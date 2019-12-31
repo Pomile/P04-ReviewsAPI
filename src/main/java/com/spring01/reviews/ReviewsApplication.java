@@ -7,12 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @SpringBootApplication
 public class ReviewsApplication {
-
+	@Value("${mongodb.database}")
+	private String databaseName;
 	public static void main(String[] args) {
 		SpringApplication.run(ReviewsApplication.class, args);
 	}
@@ -21,7 +20,7 @@ public class ReviewsApplication {
 	public Mongobee mongobee() throws Exception {
 
 		Mongobee runner = new Mongobee("mongodb://localhost:27017/");
-		runner.setDbName("reviewsDb");// host must be set if not set in URI
+		runner.setDbName(databaseName);// host must be set if not set in URI
 		runner.setChangeLogsScanPackage("com.spring01.reviews.changelogs"); // the package to be scanned for changesets
 		return runner;
 	}
