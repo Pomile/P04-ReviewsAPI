@@ -72,7 +72,10 @@ public class ReviewsController {
      * @return The list of reviews.
      */
     @RequestMapping(value = "/reviews/products/{productId}", method = RequestMethod.GET)
-    public ResponseEntity<List<?>> listReviewsForProduct(@PathVariable("productId") Integer productId) {
-        throw new HttpServerErrorException(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<List<?>> listReviewsForProduct(@PathVariable("productId")
+                                                             @Min(value = 1, message = "Product id must be greater than or equal to 1")
+                                                                     Long productId) {
+        Optional<List<Review>> reviews = reviewService.getProductReviews(productId);
+        return  new ResponseEntity<List<?>>(reviews.get(), HttpStatus.OK);
     }
 }

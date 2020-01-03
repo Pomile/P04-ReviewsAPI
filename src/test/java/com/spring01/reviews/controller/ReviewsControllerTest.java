@@ -25,6 +25,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -57,8 +60,11 @@ class ReviewsControllerTest {
         newReview.set_id("5e0b0ce65c54be4e05ac4998");
         newReview.setProductId(productId);
         product.setId(productId);
+        List<Review> reviews = new ArrayList<Review>();
+        reviews.add(newReview);
         given(productService.findById(1)).willReturn(java.util.Optional.of(product));
         given(reviewService.save(any())).willReturn(review);
+        given(reviewService.getProductReviews(1L)).willReturn(java.util.Optional.of(reviews));
     }
 
     @Test
@@ -119,6 +125,16 @@ class ReviewsControllerTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.errors[0]").value("Invalid input for /hhghgdh")
                 );
+    }
+
+    @Test
+    public void shouldReturnProductReviews() throws Exception {
+        mvc.perform(get( new URI("/reviews/products/1"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.[0]._id").value("5e0b0ce65c54be4e05ac4998")
+        );
     }
 
 }

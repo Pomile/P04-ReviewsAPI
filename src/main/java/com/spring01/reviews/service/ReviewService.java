@@ -4,6 +4,9 @@ import com.spring01.reviews.model.Review;
 import com.spring01.reviews.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ReviewService{
     private ReviewRepository reviewRepository;
@@ -19,5 +22,15 @@ public class ReviewService{
      */
     public Review save(Review review){
         return reviewRepository.save(review);
+    }
+
+    /**
+     ** Get a of product reviews
+     * @param productId a product id
+     * @return a list product reviews in the repository
+     */
+
+    public Optional<List<Review>> getProductReviews(Long productId){
+        return reviewRepository.findAllByProductId(productId);
     }
 }
