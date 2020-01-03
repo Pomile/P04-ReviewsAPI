@@ -11,7 +11,7 @@ public class DatabaseChangelog {
     @ChangeSet(order = "001", id = "someChangeId", author = "babsAuthor")
     public void importantWorkToDo(DB db){
         // task implementation
-        db.createCollection("Reviews", new BasicDBObject());
+        db.createCollection("reviews", new BasicDBObject());
     }
 
 
