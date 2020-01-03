@@ -5,7 +5,6 @@ import com.spring01.reviews.config.DataConfig;
 import com.spring01.reviews.model.Review;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-// import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Replace;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -14,6 +13,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
@@ -47,11 +50,21 @@ public class ReviewRepositoryTest {
             + " then object is saved")
     @Test
     public void createProductReview() {
-        Review newReview = review;
-        newReview.setProductId(1L);
-        Review res = reviewRepository.save(newReview);
+        Review res = saveReview();
         assertThat(res.getProductId()).isEqualTo(1L);
     }
 
+    @DisplayName("Should return a list of product reviews")
+    @Test
+    public  void productReviews(){
+        saveReview();
+        Optional<List<Review>> reviews = reviewRepository.findAllByProductId(1L);
+        assertThat(reviews.get().size()).isEqualTo(2);
+    }
 
+    private Review saveReview(){
+        Review newReview = review;
+        newReview.setProductId(1L);
+        return reviewRepository.save(newReview);
+    }
 }
