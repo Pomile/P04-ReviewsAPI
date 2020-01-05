@@ -15,7 +15,7 @@ public class DataConfig {
         Comment comment = new Comment();
         comment.setTitle("Why did you say Iphones are great?");
         comment.setText("I just love iphone graphics");
-        comment.setReview_id("5e0f575181b24e25f8d4c78c");
+        comment.setReviewId("5e0f575181b24e25f8d4c78c");
 
         return comment;
     }
