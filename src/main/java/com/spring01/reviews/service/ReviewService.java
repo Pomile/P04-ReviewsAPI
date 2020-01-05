@@ -33,4 +33,14 @@ public class ReviewService{
     public Optional<List<Review>> getProductReviews(Long productId){
         return reviewRepository.findAllByProductId(productId);
     }
+
+    /**
+     ** Get a review
+     * @param reviewId a product id
+     * @return a list product reviews in the repository
+     */
+
+    public Optional<Review> getReview(String reviewId){
+        return reviewRepository.findById(reviewId);
+    }
 }

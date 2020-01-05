@@ -9,9 +9,10 @@ import com.mongodb.DB;
 public class DatabaseChangelog {
 
     @ChangeSet(order = "001", id = "someChangeId", author = "babsAuthor")
-    public void importantWorkToDo(DB db){
+    public void migrate(DB db){
         // task implementation
         db.createCollection("reviews", new BasicDBObject());
+        db.createCollection("comments", new BasicDBObject());
     }
 
 
