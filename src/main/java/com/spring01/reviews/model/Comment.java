@@ -21,7 +21,7 @@ public class Comment {
     @NotBlank(message = "Summary cannot be empty")
     private String text;
 
-    private String review_id;
+    private String reviewId;
 
     private ZonedDateTime zonedDateTime = ZonedDateTime.now();
 
@@ -65,11 +65,11 @@ public class Comment {
         this.zonedDateTime = zonedDateTime;
     }
 
-    public String getReview_id() {
-        return review_id;
+    public String getReviewId() {
+        return reviewId;
     }
 
-    public void setReview_id(String review_id) {
-        this.review_id = review_id;
+    public void setReviewId(String reviewId) {
+        this.reviewId = reviewId;
     }
 }

@@ -7,7 +7,6 @@ import com.spring01.reviews.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,7 +46,7 @@ public class CommentsController {
     public ResponseEntity<?> createCommentForReview(@Valid @RequestBody Comment comment, @PathVariable("reviewId") String reviewId) {
         Optional<Review> review = reviewService.getReview(reviewId);
         if(review.isPresent()){
-            comment.setReview_id(reviewId);
+            comment.setReviewId(reviewId);
             Optional<Comment> comment1 = Optional.ofNullable(commentService.save(comment));
             return new ResponseEntity<Object>(comment1.get(), HttpStatus.CREATED);
 
@@ -63,9 +62,11 @@ public class CommentsController {
      * 4. If found, return list of comments.
      *
      * @param reviewId The id of the review.
+     * @return
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.GET)
-    public List<?> listCommentsForReview(@PathVariable("reviewId") Integer reviewId) {
-        throw new HttpServerErrorException(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<List<Comment>> listCommentsForReview(@PathVariable("reviewId") String reviewId) {
+        Optional<List<Comment>> comments = commentService.getReviewComments(reviewId);
+        return new ResponseEntity<List<Comment>>(comments.get(), HttpStatus.OK);
     }
 }

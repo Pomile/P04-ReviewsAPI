@@ -1,12 +1,9 @@
 package com.spring01.reviews.service;
 
 import com.spring01.reviews.model.Comment;
-import com.spring01.reviews.model.Review;
 import com.spring01.reviews.repository.CommentRepository;
-import com.spring01.reviews.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +31,8 @@ public class CommentService{
      * @return a list product reviews in the repository
      */
 
-    public Optional<List<Review>> getProductReviews(Long reviewId){
-        return null;
+    public Optional<List<Comment>> getReviewComments(String reviewId){
+        System.err.println(reviewId);
+        return commentRepository.findAllByReviewId(reviewId);
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,7 +49,15 @@ public class CommentRepositoryTest {
     @Test
     public void save(){
         Comment comment = saveComment();
-        assertEquals("5e0f575181b24e25f8d4c78c", comment.getReview_id());
+        assertEquals("5e0f575181b24e25f8d4c78c", comment.getReviewId());
+    }
+
+    @DisplayName("Get all review comments")
+    @Test
+    public void findAllByReviewId(){
+        saveComment();
+        Optional<List<Comment>> comments = commentRepository.findAllByReviewId(comment.getReviewId());
+        assertEquals(2, comments.get().size());
     }
 
     private Comment saveComment(){

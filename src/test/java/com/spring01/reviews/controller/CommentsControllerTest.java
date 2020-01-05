@@ -25,6 +25,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,11 +56,14 @@ class CommentsControllerTest {
         configApplicationContext = new AnnotationConfigApplicationContext(DataConfig.class);
         Review review = configApplicationContext.getBean("reviewBean", Review.class);
         Comment comment = configApplicationContext.getBean("commentBean", Comment.class);
+        List<Comment> comments = new ArrayList<>();
         this.comment = comment;
         review.set_id("5e0f575181b24e25f8d4c78c");
         comment.set_id("5e11a13bc31d8925c97d9bc9");
+        comments.add(comment);
         given(reviewService.getReview(any())).willReturn(java.util.Optional.of(review));
         given(commentService.save(any())).willReturn(comment);
+        given(commentService.getReviewComments(any())).willReturn(java.util.Optional.of(comments));
 
     }
 
@@ -74,7 +79,17 @@ class CommentsControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.review_id").value("5e0f575181b24e25f8d4c78c")
+                .andExpect(jsonPath("$.reviewId").value("5e0f575181b24e25f8d4c78c")
         );
+    }
+
+    @Test
+    public void listCommentsForReview() throws Exception {
+        mvc.perform(get(new URI("/comments/reviews/5e0f575181b24e25f8d4c78c"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].reviewId").value("5e0f575181b24e25f8d4c78c")
+                );
     }
 }
