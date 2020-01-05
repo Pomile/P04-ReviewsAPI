@@ -1,15 +1,12 @@
 package com.spring01.reviews.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-
-import java.lang.annotation.Documented;
+import com.spring01.reviews.model.Comment;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,6 +24,7 @@ public class Review {
     private String summary;
     private String details = "";
     private Long productId;
+    private List<Comment> comments = new ArrayList<>();
 
     public Review() { }
 
@@ -77,4 +75,11 @@ public class Review {
         this.productId = productId;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }
